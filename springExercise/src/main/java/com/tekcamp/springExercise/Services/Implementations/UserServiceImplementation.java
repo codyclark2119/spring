@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImplementation implements UserService {
@@ -35,5 +36,15 @@ public class UserServiceImplementation implements UserService {
     public User getUserByEmail(String email) {
         User foundUser = userRepository.findByEmail(email);
         return foundUser;
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        Optional<User> returnedUser = userRepository.findById(id);
+        if(!returnedUser.isEmpty()){
+            User foundUser = returnedUser.get();
+            return foundUser;
+        }
+        return null;
     }
 }
