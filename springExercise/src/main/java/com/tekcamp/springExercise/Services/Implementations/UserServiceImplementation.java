@@ -2,7 +2,7 @@ package com.tekcamp.springExercise.Services.Implementations;
 
 import com.tekcamp.springExercise.Model.User;
 import com.tekcamp.springExercise.Services.UserService;
-import com.tekcamp.springExercise.dao.UserRepository;
+import com.tekcamp.springExercise.Repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,5 +29,11 @@ public class UserServiceImplementation implements UserService {
     @Override
     public void createUser(User user) {
         userRepository.save(user);
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        User foundUser = userRepository.findByEmail(email);
+        return foundUser;
     }
 }
