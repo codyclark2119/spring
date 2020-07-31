@@ -20,32 +20,37 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public List<User> getUsers() {
-        List<User> userList = new ArrayList<User>();
-
-        userList = (List<User>) userRepository.findAll();
-
+        List<User> userList = (List<User>) userRepository.findAll();
         return userList;
     }
 
     @Override
-    public void createUser(User user) {
-        userRepository.save(user);
+    public User createUser(User user) {
+        try {
+            return userRepository.save(user);
+        } catch(NullPointerException exception){}
+        return null;
     }
 
     @Override
     public User getUserByEmail(String email) {
-        User foundUser = userRepository.findByEmail(email);
-        return foundUser;
+        try{
+            User foundUser = userRepository.findByEmail(email);
+            return foundUser;
+        } catch(NullPointerException exception){}
+        return null;
     }
 
     @Override
     public User getUserById(Long id) {
-        Optional<User> returnedUser = userRepository.findById(id);
-        if(!returnedUser.isEmpty()){
-            User foundUser = returnedUser.get();
-            return foundUser;
-        }
-        return null;
+        try{
+            Optional<User> returnedUser = userRepository.findById(id);
+            if(!returnedUser.isEmpty()){
+                User foundUser = returnedUser.get();
+                return foundUser;
+            }
+        } catch(NullPointerException exception){}
+            return null;
     }
 
     @Override
