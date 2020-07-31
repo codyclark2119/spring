@@ -35,18 +35,21 @@ public class UserController {
     }
 
     @PostMapping
-    public void getUser(@RequestBody User user){
+    public String getUser(@RequestBody User user){
         userService.createUser(user);
+        return "User Created";
     }
 
-    @PutMapping
-    public void updateUser(){
-
+    @PutMapping(path = "/{id}")
+    public String updateUser(@PathVariable Long id, @RequestBody User user){
+        userService.updateUser(id, user);
+        return "User Updated at Id: " + id;
     }
 
-    @DeleteMapping
-    public void deleteUser(){
-
+    @DeleteMapping(path = "/{id}")
+    public String deleteUser(@PathVariable Long id){
+        userService.deleteUser(id);
+        return "User Deleted at Id: " + id;
     }
 
 }
