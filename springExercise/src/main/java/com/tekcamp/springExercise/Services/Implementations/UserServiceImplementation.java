@@ -5,7 +5,6 @@ import com.tekcamp.springExercise.Services.UserService;
 import com.tekcamp.springExercise.Repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,10 +56,10 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public User updateUser(Long id, User user) {
+    public User updateUser(String email, User user) {
         try{
-            if(userRepository.existsById(id)){
-                User returnedUser = userRepository.findById(id).get();
+            User returnedUser = userRepository.findByEmail(email);
+            if(!returnedUser.equals(null)){
                 if(!user.getFirstName().isEmpty()){
                     returnedUser.setFirstName(user.getFirstName());
                 }

@@ -13,7 +13,7 @@ public interface UserService {
 
     User getUserById(Long id);
 
-    User updateUser(Long id, User user);
+    User updateUser(String id, User user);
 
     boolean deleteUser(Long id);
 }
