@@ -20,8 +20,11 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public List<User> getUsers() {
-        List<User> userList = (List<User>) userRepository.findAll();
-        return userList;
+        try{
+            List<User> userList = (List<User>) userRepository.findAll();
+            return userList;
+        } catch(NullPointerException exception){}
+            return null;
     }
 
     @Override
@@ -55,32 +58,35 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public User updateUser(Long id, User user) {
-        if(userRepository.existsById(id)){
-            User returnedUser = userRepository.findById(id).get();
-            if(!user.getFirstName().isEmpty()){
-                returnedUser.setFirstName(user.getFirstName());
+        try{
+            if(userRepository.existsById(id)){
+                User returnedUser = userRepository.findById(id).get();
+                if(!user.getFirstName().isEmpty()){
+                    returnedUser.setFirstName(user.getFirstName());
+                }
+                if(!user.getLastName().isEmpty()){
+                    returnedUser.setLastName(user.getLastName());
+                }
+                if(!user.getEmail().isEmpty()){
+                    returnedUser.setEmail(user.getEmail());
+                }
+                if(!user.getPassword().isEmpty()){
+                    returnedUser.setPassword(user.getPassword());
+                }
+                return userRepository.save(returnedUser);
             }
-            if(!user.getLastName().isEmpty()){
-                returnedUser.setLastName(user.getLastName());
-            }
-            if(!user.getEmail().isEmpty()){
-                returnedUser.setEmail(user.getEmail());
-            }
-            if(!user.getPassword().isEmpty()){
-                returnedUser.setPassword(user.getPassword());
-            }
-            return userRepository.save(returnedUser);
-        } else {
+        } catch(NullPointerException exception){}
             return null;
-        }
     }
 
     @Override
     public boolean deleteUser(Long id) {
-        if(userRepository.existsById(id)){
-            userRepository.deleteById(id);
-            return true;
-        }
+        try{
+            if(userRepository.existsById(id)){
+                userRepository.deleteById(id);
+                return true;
+            }
+        } catch(NullPointerException exception){}
         return false;
     }
 }

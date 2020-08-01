@@ -2,6 +2,7 @@ package com.tekcamp.springExercise.Controller;
 
 import com.tekcamp.springExercise.Model.User;
 import com.tekcamp.springExercise.Services.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,39 +18,39 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getUsers(){
+    public ResponseEntity getUsers(){
         List<User> usersList = userService.getUsers();
-        return usersList;
+        return ResponseEntity.accepted().body(usersList);
     }
 
     @GetMapping(path = "/id/{id}")
-    public User getUserById(@PathVariable Long id){
+    public ResponseEntity getUserById(@PathVariable Long id){
         User foundUser = userService.getUserById(id);
-        return foundUser;
+        return ResponseEntity.accepted().body(foundUser);
     }
 
     @GetMapping(path = "/{email}")
-    public User getUserByEmail(@PathVariable String email){
+    public ResponseEntity getUserByEmail(@PathVariable String email){
         User foundUser = userService.getUserByEmail(email);
-        return foundUser;
+        return ResponseEntity.accepted().body(foundUser);
     }
 
     @PostMapping
-    public String getUser(@RequestBody User user){
+    public ResponseEntity getUser(@RequestBody User user){
         userService.createUser(user);
-        return "User Created";
+        return ResponseEntity.accepted().body("User Created");
     }
 
     @PutMapping(path = "/{id}")
-    public String updateUser(@PathVariable Long id, @RequestBody User user){
+    public ResponseEntity updateUser(@PathVariable Long id, @RequestBody User user){
         userService.updateUser(id, user);
-        return "User Updated at Id: " + id;
+        return ResponseEntity.accepted().body("User Updated at Id: " + id);
     }
 
     @DeleteMapping(path = "/{id}")
-    public String deleteUser(@PathVariable Long id){
+    public ResponseEntity deleteUser(@PathVariable Long id){
         userService.deleteUser(id);
-        return "User Deleted at Id: " + id;
+        return ResponseEntity.accepted().body("User Deleted at Id: " + id);
     }
 
 }
