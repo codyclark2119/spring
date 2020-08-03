@@ -1,7 +1,5 @@
 package com.tekcamp.springExercise.Model;
 
-import org.hibernate.annotations.GeneratorType;
-
 import javax.persistence.*;
 
 @Entity

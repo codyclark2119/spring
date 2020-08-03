@@ -5,8 +5,6 @@ import com.tekcamp.springExercise.Shared.Dto.UserDto;
 import java.util.List;
 
 public interface UserService {
-    List<UserDto> getUsers();
-
     UserDto createUser(UserDto user);
 
     UserDto getUserByEmail(String email);
@@ -16,4 +14,6 @@ public interface UserService {
     UserDto updateUser(String id, UserDto user);
 
     boolean deleteUser(Long id);
+
+    List<UserDto> getUsers(int page, int limit);
 }

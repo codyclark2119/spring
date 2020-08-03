@@ -23,9 +23,10 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity getUsers(){
+    public ResponseEntity getUsers(@RequestParam(value = "page", defaultValue = "1" ) int page,
+                                   @RequestParam(value = "limit", defaultValue = "3" ) int limit){
         //Getting a list of users from the db
-        List<UserDto> usersList = userService.getUsers();
+        List<UserDto> usersList = userService.getUsers(page, limit);
         //Creating a list to store the response in
         List<UserResponse> returnList = new ArrayList<>();
         if(usersList.isEmpty()) {
@@ -73,9 +74,6 @@ public class UserController {
         BeanUtils.copyProperties(userRequest, userDto);
         //Sending the copied data to the database to be saved and returned
         UserDto createdUser = userService.createUser(userDto);
-        if(createdUser == null) {
-            return ResponseEntity.badRequest().body("User Already Exists");
-        }
         //Creating a clean response with no sensitive information and returning it
         UserResponse userReturn = new UserResponse();
         BeanUtils.copyProperties(createdUser, userReturn);

@@ -1,10 +1,14 @@
 package com.tekcamp.springExercise.Services.Implementations;
 
+import com.tekcamp.springExercise.Model.Exceptions.ExistingUserException;
 import com.tekcamp.springExercise.Model.User;
 import com.tekcamp.springExercise.Services.UserService;
 import com.tekcamp.springExercise.Repositories.UserRepository;
 import com.tekcamp.springExercise.Shared.Dto.UserDto;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,9 +25,11 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public List<UserDto> getUsers() {
-        //Gets all users from userRepository and casts it to a list of users
-        List<User> userList = (List<User>) userRepository.findAll();
+    public List<UserDto> getUsers(int page, int limit) {
+        if(page > 0) page--;
+        Pageable pageRequest = PageRequest.of(page, limit);
+        //Gets all users from userRepository and returns the pages list of users
+        Page<User> userList = userRepository.findAll(pageRequest);
         //Creates a Dto returnList to only return POJOs
         List<UserDto> returnList = new ArrayList<>();
         //Loop through users from database
@@ -50,8 +56,8 @@ public class UserServiceImplementation implements UserService {
             BeanUtils.copyProperties(savedUser, returnDto);
             return returnDto;
         } else {
-            //returning null for error handling
-            return null;
+            //returning error handling
+            throw new ExistingUserException("User email already in use.");
         }
     }
 
@@ -59,10 +65,11 @@ public class UserServiceImplementation implements UserService {
     public UserDto getUserByEmail(String email) {
         //Custom UserRepository method to return user by string email passed
         User foundUser = userRepository.findByEmail(email);
-        //returning null for error handling of no user found
+        //Returning null for error handling of no user found
         if(foundUser == null){
             return null;
         } else {
+            //Returning the found value
             UserDto returnDto = new UserDto();
             BeanUtils.copyProperties(foundUser, returnDto);
             return returnDto;
@@ -72,10 +79,11 @@ public class UserServiceImplementation implements UserService {
     @Override
     public UserDto getUserById(Long id) {
         User foundUser = userRepository.findById(id).get();
-        //returning null for error handling of unfound user
+        //Returning null for error handling of unfound user
         if(foundUser == null){
             return null;
         } else {
+            //Returning the found value
             UserDto returnDto = new UserDto();
             BeanUtils.copyProperties(foundUser, returnDto);
             return returnDto;
@@ -83,25 +91,32 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public UserDto updateUser(String email, UserDto user) {
+    public UserDto updateUser(String email, UserDto userDto) {
         User returnedUser = userRepository.findByEmail(email);
         //returning null for error handling of unfound user
         if(returnedUser == null){
             return null;
         }
-        if(!user.getFirstName().isEmpty()){
-            returnedUser.setFirstName(user.getFirstName());
+        //Checks to only update values if they arent empty in the request
+        if(!userDto.getFirstName().isEmpty()){
+            returnedUser.setFirstName(userDto.getFirstName());
         }
-        if(!user.getLastName().isEmpty()){
-            returnedUser.setLastName(user.getLastName());
+        if(!userDto.getLastName().isEmpty()){
+            returnedUser.setLastName(userDto.getLastName());
         }
-        if(!user.getEmail().isEmpty()){
-            returnedUser.setEmail(user.getEmail());
+        if(!userDto.getEmail().isEmpty()){
+            //Check for the email to exist already in the database
+            if(userRepository.findByEmail(userDto.getEmail()) != null){
+                throw new ExistingUserException("User email already in use.");
+            }
+            returnedUser.setEmail(userDto.getEmail());
         }
-        if(!user.getPassword().isEmpty()){
-            returnedUser.setPassword(user.getPassword());
+        if(!userDto.getPassword().isEmpty()){
+            returnedUser.setPassword(userDto.getPassword());
         }
+        //Saving over the existing user data
         User updatedUser = userRepository.save(returnedUser);
+        //Copying and returning new user data
         UserDto returnDto = new UserDto();
         BeanUtils.copyProperties(updatedUser, returnDto);
         return returnDto;
