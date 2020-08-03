@@ -1,19 +1,19 @@
 package com.tekcamp.springExercise.Services;
 
-import com.tekcamp.springExercise.Model.User;
+import com.tekcamp.springExercise.Shared.Dto.UserDto;
 
 import java.util.List;
 
 public interface UserService {
-    List<User> getUsers();
+    List<UserDto> getUsers();
 
-    User createUser(User user);
+    UserDto createUser(UserDto user);
 
-    User getUserByEmail(String email);
+    UserDto getUserByEmail(String email);
 
-    User getUserById(Long id);
+    UserDto getUserById(Long id);
 
-    User updateUser(String id, User user);
+    UserDto updateUser(String id, UserDto user);
 
     boolean deleteUser(Long id);
 }
